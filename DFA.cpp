@@ -17,6 +17,7 @@ DFA::DFA(vector<string> _states, vector<string> _alphabet,
     states = _states;
     alphabet = _alphabet;
     currentState = _startState;
+    startState = _startState;
     acceptStates = _acceptStates;
     transitions = _transitions;
 }
@@ -46,7 +47,14 @@ string DFA::deltaToString()
 
 string DFA::toString()
 {
-  string outStr = "States: ";
+  string outStr = "";
+  if (isAccepted())
+  {
+    outStr = "Accepted\n";
+  } else {
+    outStr = "Not Accepted\n";
+  }
+  outStr = outStr + "States: ";
   for (int i = 0; i<states.size(); ++i)
   {
     outStr = outStr + states[i];
@@ -74,7 +82,21 @@ string DFA::toString()
     }
   }
   outStr = outStr + "\nTransition function: \n" + deltaToString();
-
   return outStr;
+}
 
+void DFA::input(string in)
+{
+  if (find(alphabet.begin(), alphabet.end(), in) == alphabet.end())
+  {
+    throw invalid_argument("That value is not in the valid alphabet.");
+    return;
+  }
+  currentState = transitions[currentState][in];
+  return;
+}
+
+bool DFA::isAccepted()
+{
+  return (find(acceptStates.begin(), acceptStates.end(), currentState) != acceptStates.end());
 }

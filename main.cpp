@@ -11,7 +11,7 @@ int main(int argc, char** argv)
   {
     cout << "Usage: " << argv[0] << " <filename>" << endl;
     //return 0; #TODO: Uncomment this line.
-    cout << "Using a pre-made FSA" << endl;
+    cout << "Using a pre-made FSA\n" << endl;
     vector<string> Q;
     Q.push_back("1");
     Q.push_back("2");
@@ -34,6 +34,13 @@ int main(int argc, char** argv)
 
     DFA myDFA(Q, E, "1", F, delta);
     cout << myDFA.toString() << endl;
+
+    string myStr = "abaabaabab";
+    for (int i = 0; i<myStr.length(); ++i)
+    {
+      myDFA.input(string(1, myStr[i]));
+      cout << myDFA.toString() << endl;
+    }
   }
 
 
