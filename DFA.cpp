@@ -49,19 +49,31 @@ string DFA::toString()
   string outStr = "States: ";
   for (int i = 0; i<states.size(); ++i)
   {
-    outStr = outStr + states[i] + ", ";
+    outStr = outStr + states[i];
+    if (i+1 < states.size())
+    {
+      outStr = outStr + ", ";
+    }
   }
   outStr = outStr + "\nAlphabet:";
   for (int i = 0; i<alphabet.size(); ++i)
   {
-    outStr = outStr + alphabet[i] + ", ";
+    outStr = outStr + alphabet[i];
+    if (i+1<alphabet.size())
+    {
+      outStr = outStr + ", ";
+    }
   }
   outStr = outStr + "\nCurrent state: "+currentState+"\nAccept states: ";
   for (int i = 0; i<acceptStates.size(); ++i)
   {
-    outStr = outStr + acceptStates[i] + ", ";
+    outStr = outStr + acceptStates[i];
+    if (i+1<acceptStates.size())
+    {
+      outStr = outStr + ", ";
+    }
   }
-  outStr = outStr + "\nTransition function: " + deltaToString() + "\n";
+  outStr = outStr + "\nTransition function: \n" + deltaToString();
 
   return outStr;
 
