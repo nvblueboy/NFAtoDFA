@@ -25,13 +25,28 @@ NFA::NFA(vector<string> _states, vector<string> _alphabet,
 
 vector<string> NFA::epsClosure(string state)
 {
-  string s = state;
-  vector<string> outStates;
-  //Keep going along epsilon transitions until you can't make one anymore.
-  while (transitions[s].find("EPS") != transitions[s].end())
+  //Put the first state in the queue then search until the queue is empty.
+  queue<string> stateQueue;
+  vector<string> visited;
+  stateQueue.push(state);
+  string s = "";
+  while (!stateQueue.empty())
   {
-    outStates.push_back(transitions[s]["EPS"]);
-    s = transitions[s]["EPS"];
+    //Get the front element of the queue and pop it.
+    s = stateQueue.front();
+    stateQueue.pop();
+    vector<string> epsTransitions = transitions[s]["EPS"];
+    for (int i = 0; i < epsTransitions.size(); ++i)
+    {
+      string poss = epsTransitions[i];
+      if (find(visited.begin(), visited.end(), poss) == visited.end())
+      {
+        //If poss hasn't already been visited, add it to the queue.
+        stateQueue.push(poss);
+      }
+    }
+    //Mark the current state as visited.
+    visited.push_back(s);
   }
-  return outStates;
+  return visited;
 }

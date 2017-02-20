@@ -2,6 +2,8 @@
 #include <map>
 #include <vector>
 #include "DFA.h"
+#include "NFA.h"
+#include "FileIO.h"
 
 using namespace std;
 
@@ -16,6 +18,7 @@ int main(int argc, char** argv)
     Q.push_back("1");
     Q.push_back("2");
     Q.push_back("3");
+    Q.push_back("4");
 
     vector<string> E;
     E.push_back("a");
@@ -24,22 +27,30 @@ int main(int argc, char** argv)
     vector<string> F;
     F.push_back("2");
 
-    map<string, map<string,string>> delta;
-    delta["1"]["a"] = string("1");
-    delta["1"]["b"] = "2";
-    delta["2"]["a"] = "3";
-    delta["2"]["b"] = "2";
-    delta["3"]["a"] = "2";
-    delta["3"]["b"] = "2";
+    map<string, map<string,vector<string>>> delta;
+    delta["1"]["EPS"] = {"2"};
+    delta["1"]["a"] = {"2"};
+    delta["1"]["b"] = {"3"};
+    delta["2"]["EPS"] = {"1","4"};
+    delta["2"]["a"] = {"4"};
+    delta["2"]["b"] = {"1"};
+    delta["4"]["EPS"] = {"3"};
+    delta["4"]["a"] = {"2"};
+    delta["4"]["b"] = {"3"};
+    delta["3"]["a"] = {"2"};
+    delta["3"]["b"] = {"4"};
 
-    DFA myDFA(Q, E, "1", F, delta);
-    cout << myDFA.toString() << endl;
-
-    string myStr = "abaabaabab";
-    for (int i = 0; i<myStr.length(); ++i)
+    NFA myNFA(Q, E, "1", F, delta);
+    vector<string> three = myNFA.epsClosure("3");
+    vector<string> one = myNFA.epsClosure("1");
+    for (int i = 0; i<three.size(); ++i)
     {
-      myDFA.input(string(1, myStr[i]));
-      cout << myDFA.toString() << endl;
+      cout << three[i] << endl;
+    }
+    cout << endl;
+    for (int i = 0; i<one.size(); ++i)
+    {
+      cout << one[i] << endl;
     }
   }
 
