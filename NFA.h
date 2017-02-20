@@ -8,6 +8,9 @@ using namespace std;
 #ifndef NFA_H
 #define NFA_H
 
+string join(vector<string> v, char d);
+string pad(string in, char d, int num);
+
 class NFA{
 public:
   NFA();
@@ -16,6 +19,9 @@ public:
     map<string, map<string,vector<string>>> _transitions);
   ~NFA();
   vector<string> epsClosure(string state);
+  string deltaToString();
+  string toString();
+
   vector<string> states;
   vector<string> alphabet;
   string startState;

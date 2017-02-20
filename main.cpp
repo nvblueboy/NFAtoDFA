@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     map<string, map<string,vector<string>>> delta;
     delta["1"]["EPS"] = {"2"};
     delta["1"]["a"] = {"2"};
-    delta["1"]["b"] = {"3"};
+    delta["1"]["b"] = {"3","2","4"};
     delta["2"]["EPS"] = {"1","4"};
     delta["2"]["a"] = {"4"};
     delta["2"]["b"] = {"1"};
@@ -41,17 +41,10 @@ int main(int argc, char** argv)
     delta["3"]["b"] = {"4"};
 
     NFA myNFA(Q, E, "1", F, delta);
-    vector<string> three = myNFA.epsClosure("3");
-    vector<string> one = myNFA.epsClosure("1");
-    for (int i = 0; i<three.size(); ++i)
-    {
-      cout << three[i] << endl;
-    }
-    cout << endl;
-    for (int i = 0; i<one.size(); ++i)
-    {
-      cout << one[i] << endl;
-    }
+    cout << myNFA.toString() << endl;
+  } else {
+    NFA myNFA = readFile(argv[1]);
+    cout << myNFA.toString() << endl;
   }
 
 

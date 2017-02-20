@@ -40,13 +40,12 @@ vector<string> splitString(string in, char delimeter)
 
 NFA readFile(char* filename)
 {
-  //TODO: Implement transition function, return NFA.
   ifstream infile(filename);
   vector<string> states;
   vector<string> alphabet;
   string startState;
   vector<string> acceptStates;
-  map<string, map<string,vector<string>>> transitions;
+  map<string, map<string,vector<string>>> _transitions;
 
   if (infile.is_open())
   {
@@ -61,6 +60,7 @@ NFA readFile(char* filename)
       } else if (linecount == 2)
       {
         alphabet = splitString(line, '\t');
+        cout << "Alphabet: "<< join(alphabet,'X') << endl;
       } else if (linecount == 3)
       {
         startState = line;
@@ -71,9 +71,10 @@ NFA readFile(char* filename)
         //Read in the transition function.
         vector<string> str1 = splitString(line,',');
         vector<string> str2 = splitString(str1[1],'=');
-        transitions[str1[0]][str2[0]].push_back(str2[1]);
+        vector<string> str {str1[0],str2[0],str2[1]};
+        _transitions[str[0]][str[1]].push_back(str[2]);
       }
     }
   }
-  return NFA(states,alphabet,startState,acceptStates,transitions);
+  return NFA(states,alphabet,startState,acceptStates,_transitions);
 }
