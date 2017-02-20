@@ -14,37 +14,41 @@ int main(int argc, char** argv)
     cout << "Usage: " << argv[0] << " <filename>" << endl;
     //return 0; #TODO: Uncomment this line.
     cout << "Using a pre-made FSA\n" << endl;
-    vector<string> Q;
-    Q.push_back("1");
-    Q.push_back("2");
-    Q.push_back("3");
-    Q.push_back("4");
+    vector<string> Q {"1","2","3","4","5","6"};
 
-    vector<string> E;
-    E.push_back("a");
-    E.push_back("b");
+    vector<string> E {"a","b"};
 
-    vector<string> F;
-    F.push_back("2");
+    vector<string> F {"2"};
 
     map<string, map<string,vector<string>>> delta;
-    delta["1"]["EPS"] = {"2"};
-    delta["1"]["a"] = {"2"};
-    delta["1"]["b"] = {"3","2","4"};
-    delta["2"]["EPS"] = {"1","4"};
-    delta["2"]["a"] = {"4"};
-    delta["2"]["b"] = {"1"};
-    delta["4"]["EPS"] = {"3"};
-    delta["4"]["a"] = {"2"};
-    delta["4"]["b"] = {"3"};
-    delta["3"]["a"] = {"2"};
-    delta["3"]["b"] = {"4"};
+    delta["1"]["a"]={"5","2"};
+    delta["1"]["b"]={"6"};
+    delta["1"]["EPS"]={"2","3"};
+    delta["5"]["EPS"]={"2"};
+    delta["2"]["EPS"]={"3"};
+    delta["3"]["EPS"]={"4"};
+    delta["3"]["EPS"]={"1"};
 
     NFA myNFA(Q, E, "1", F, delta);
-    cout << myNFA.toString() << endl;
+    myNFA.toString();
+    vector<string> epsOne = myNFA.epsClosure("1");
+    vector<string> epsFive = myNFA.epsClosure("5");
+
+    for (int i = 0; i<epsOne.size(); ++i)
+    {
+      cout << "'"<< epsOne[i] <<"'"<< " ";
+    }
+    cout << endl;
+
+    for (int i = 0; i<epsFive.size(); ++i)
+    {
+      cout << epsFive[i] << " ";
+    }
+    cout << endl;
+
   } else {
     NFA myNFA = readFile(argv[1]);
-    cout << myNFA.toString() << endl;
+    myNFA.toString();
   }
 
 

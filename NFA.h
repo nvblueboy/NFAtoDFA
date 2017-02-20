@@ -10,6 +10,7 @@ using namespace std;
 
 string join(vector<string> v, char d);
 string pad(string in, char d, int num);
+string joinQueue(queue<string> q, char d);
 
 class NFA{
 public:
@@ -19,8 +20,8 @@ public:
     map<string, map<string,vector<string>>> _transitions);
   ~NFA();
   vector<string> epsClosure(string state);
-  string deltaToString();
-  string toString();
+  void deltaToString();
+  void toString();
 
   vector<string> states;
   vector<string> alphabet;

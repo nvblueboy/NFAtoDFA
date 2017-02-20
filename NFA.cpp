@@ -23,6 +23,31 @@ NFA::NFA(vector<string> _states, vector<string> _alphabet,
   transitions = _transitions;
 }
 
+string joinQueue(queue<string> q, char d)
+{
+  int s = q.size();
+  vector<string> out;
+  for (int i = 0; i<s; ++i)
+  {
+    out.push_back(q.front());
+    q.push(q.front());
+    q.pop();
+  }
+  return join(out,d);
+}
+
+bool pointInVector(vector<string> v, string s)
+{
+  for (int i = 0; i<v.size(); ++i)
+  {
+    if (v[i] == s)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 vector<string> NFA::epsClosure(string state)
 {
   //Put the first state in the queue then search until the queue is empty.
@@ -32,6 +57,7 @@ vector<string> NFA::epsClosure(string state)
   string s = "";
   while (!stateQueue.empty())
   {
+    cout << joinQueue(stateQueue,',') << endl;
     //Get the front element of the queue and pop it.
     s = stateQueue.front();
     stateQueue.pop();
@@ -39,10 +65,13 @@ vector<string> NFA::epsClosure(string state)
     for (int i = 0; i < epsTransitions.size(); ++i)
     {
       string poss = epsTransitions[i];
-      if (find(visited.begin(), visited.end(), poss) == visited.end())
+      if (!pointInVector(visited, poss))
       {
         //If poss hasn't already been visited, add it to the queue.
+        cout << "Pushing " << poss << endl;
         stateQueue.push(poss);
+      } else {
+        cout << "Already visited " << poss << endl;
       }
     }
     //Mark the current state as visited.
@@ -54,6 +83,10 @@ vector<string> NFA::epsClosure(string state)
 //To use in the "toString" function in class NFA.
 string join(vector<string> v, char d)
 {
+  if (v.size() == 0)
+  {
+    return "";
+  }
   string outStr = "";
   for (int i = 0; i<v.size(); ++i)
   {
@@ -79,73 +112,16 @@ string pad(string in, char d, int num)
   return p+in;
 }
 
-string NFA::deltaToString()
+void NFA::deltaToString()
 {
-  //Find out how long the longest state is.
-  int stateSize=0;
   for (int i = 0; i<states.size(); ++i)
   {
-    if (states[i].length() > stateSize)
-    {
-      stateSize = states[i].length();
-    }
-  }
-  //Iterate through each letter in the alpbabet.
-  //Get the longest string to pretty-print the table.
-  map<string, int> alphabetSize;
-  for (int i = 0; i<alphabet.size()+1; ++i)
-  {
-    //Don't forget about eps transitions, so start at -1.
-    int currentSize = 0;
-    string currentLetter;
-    if (i == alphabet.size())
-    {
-      //Before iterating through the letters, check for EPS.
-      currentLetter = "EPS";
-      currentSize = 3;
-    } else {
-      //Get the size of the letter.
-      currentLetter = alphabet[i];
-      currentSize = currentLetter.length();
-    }
-    for (int j = 0; j<states.size(); ++j)
-    {
-      //Get the output of the delta function for the state and letter.
-      vector<string> output = transitions[states[j]][currentLetter];
-      //Get it's size when joined.
-      string str = join(output, ',');
-      int s = str.length();
-      //If it's the biggest string, mark that.
-      if (s>currentSize)
-      {
-        currentSize = s;
-      }
-    }
-    //Map it for use later on.
-    alphabetSize[currentLetter] = currentSize;
-  }
-  //Now start to constuct the string.
-  string outStr = "";
-  //Construct the top row, showing the alphabet (and epsilon)
-  outStr += string(stateSize, ' ')+ " |"; //Offset for the states.
-  for (int i = 0; i<alphabet.size()+1; ++i)
-  {
-    string letter;
-    if (i == alphabet.size())
-    {
-      letter = "EPS";
-    } else {
-      letter = alphabet[i];
-    }
-    outStr += pad(letter, ' ', alphabetSize[letter]) + " |";
-  }
-  outStr += "\n";
-  for (int i = 0; i<states.size(); ++i)
-  {
+    //cout <<"i " << i << endl;
     string state = states[i];
-    outStr += pad(state, ' ',stateSize)+" |";
+    //cout << "State: " << state << endl;
     for (int j = 0; j<alphabet.size()+1; ++j)
     {
+      //cout << "j "<< j << endl;
       string letter;
       if (j == alphabet.size())
       {
@@ -153,28 +129,21 @@ string NFA::deltaToString()
       } else {
         letter = alphabet[j];
       }
-
-      //cout << "'" <<state <<"'" << letter <<"'" << endl;
-      vector<string> output = transitions[state][letter];
-      string out = pad(join(output,','), ' ',alphabetSize[letter]);
-      //cout << "Out: "<<out << endl;
-      outStr += out+" |";
+      //cout << "Letter: "<<letter << endl;
+      string out = join(transitions[state][letter],',');
+      if (out.length() > 0)
+      {
+        cout << "Function: "<< state << ", "<<letter<<" = "<<out << endl;
+      }
     }
-    outStr += "\n";
   }
-
-
-  return outStr;
 }
-
-string NFA::toString()
+void NFA::toString()
 {
-  string outStr = "";
-  outStr += "States: " + join(states, ',') + "\n";
-  outStr += "Alphabet: " + join(alphabet, ',')+"\n";
-  outStr += "Start state: " + startState + "\n";
-  outStr += "Accept states: " + join(acceptStates, ',') + "\n";
-  outStr += "Transition table: \n";
-  outStr += deltaToString() + "\n";
-  return outStr;
+  cout << "States: " << join(states, ',') << endl;
+  cout << "Alphabet: " << join(alphabet, ',')<< endl;
+  cout << "Start state: " << startState << endl;
+  cout << "Accept states: " << join(acceptStates, ',') << endl;
+  cout << "Transition table: " << endl;
+  deltaToString();
 }

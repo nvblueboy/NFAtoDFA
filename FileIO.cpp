@@ -53,26 +53,32 @@ NFA readFile(char* filename)
     int linecount = 0;
     while (getline(infile, line))
     {
+      cout << line << endl;
       linecount++;
       if (linecount == 1)
       {
         states = splitString(line, '\t');
+        cout << "States: "<< join(states,',') << endl;
       } else if (linecount == 2)
       {
         alphabet = splitString(line, '\t');
-        cout << "Alphabet: "<< join(alphabet,'X') << endl;
+        cout << "Alphabet: "<< join(alphabet,',') << endl;
       } else if (linecount == 3)
       {
         startState = line;
+        cout << "Start state: "+startState;
       } else if (linecount == 4)
       {
         acceptStates = splitString(line, '\t');
+        cout << "Accept states: "<< join(acceptStates,',') << endl;
       } else {
         //Read in the transition function.
         vector<string> str1 = splitString(line,',');
         vector<string> str2 = splitString(str1[1],'=');
         vector<string> str {str1[0],str2[0],str2[1]};
         _transitions[str[0]][str[1]].push_back(str[2]);
+        cout << "Transition: " << str[0] << " " << str[1] << " " << str[2] << endl;
+        cout << "Current: " << join(_transitions[str[0]][str[1]],'\n') << endl;
       }
     }
   }
