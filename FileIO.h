@@ -11,6 +11,7 @@ using namespace std;
 #define FILEIO_H
 
 //Utility functions to load in and write out NFAs and DFAs.
+string cleanString(string input);
 int countChars(string in, char delimeter);
 vector<string> splitString(string in, char delimeter);
 NFA readFile(char* filename); //Take in a file and return a NFA.

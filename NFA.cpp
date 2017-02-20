@@ -12,15 +12,38 @@ NFA::~NFA()
 }
 
 NFA::NFA(vector<string> _states, vector<string> _alphabet,
-  string _startState, vector<string> _acceptStates,
-  map<string, map<string,vector<string>>> _transitions)
+  string _startState, vector<string> _acceptStates)
 {
   states = _states;
   alphabet = _alphabet;
   currentState = _startState;
   startState = _startState;
   acceptStates = _acceptStates;
-  transitions = _transitions;
+}
+
+void NFA::addTransition(string from, string input, string to)
+{
+  transitions[from][input].push_back(to);
+}
+
+void NFA::setStates(vector<string> _states)
+{
+  states = _states;
+}
+
+void NFA::setAlphabet(vector<string> _alphabet)
+{
+  alphabet = _alphabet;
+}
+
+void NFA::setStartState(string _startState)
+{
+  startState = _startState;
+}
+
+void NFA::setAcceptStates(vector<string> _acceptStates)
+{
+  acceptStates = _acceptStates;
 }
 
 string joinQueue(queue<string> q, char d)
@@ -36,11 +59,25 @@ string joinQueue(queue<string> q, char d)
   return join(out,d);
 }
 
+vector<string> queueToVector(queue<string> q)
+{
+  int s = q.size();
+  vector<string> out;
+  for (int i = 0; i<s; ++i)
+  {
+    out.push_back(q.front());
+    q.push(q.front());
+    q.pop();
+  }
+  return out;
+}
+
 bool pointInVector(vector<string> v, string s)
 {
   for (int i = 0; i<v.size(); ++i)
   {
-    if (v[i] == s)
+    string curr = v[i];
+    if (curr == s)
     {
       return true;
     }
@@ -57,26 +94,25 @@ vector<string> NFA::epsClosure(string state)
   string s = "";
   while (!stateQueue.empty())
   {
-    cout << joinQueue(stateQueue,',') << endl;
     //Get the front element of the queue and pop it.
     s = stateQueue.front();
     stateQueue.pop();
+    //Mark the current state as visited.
+    visited.push_back(s);
     vector<string> epsTransitions = transitions[s]["EPS"];
     for (int i = 0; i < epsTransitions.size(); ++i)
     {
+      vector<string> q_vec = queueToVector(stateQueue);
       string poss = epsTransitions[i];
-      if (!pointInVector(visited, poss))
+      if (!pointInVector(visited, poss) && !pointInVector(q_vec, poss))
       {
         //If poss hasn't already been visited, add it to the queue.
-        cout << "Pushing " << poss << endl;
+        //Unless it's already in the queue, then don't add it.
         stateQueue.push(poss);
-      } else {
-        cout << "Already visited " << poss << endl;
       }
     }
-    //Mark the current state as visited.
-    visited.push_back(s);
   }
+  visited.erase(visited.begin()); //Erase the first element, x doesn't epsclose x.
   return visited;
 }
 
@@ -116,12 +152,9 @@ void NFA::deltaToString()
 {
   for (int i = 0; i<states.size(); ++i)
   {
-    //cout <<"i " << i << endl;
     string state = states[i];
-    //cout << "State: " << state << endl;
     for (int j = 0; j<alphabet.size()+1; ++j)
     {
-      //cout << "j "<< j << endl;
       string letter;
       if (j == alphabet.size())
       {
@@ -129,11 +162,11 @@ void NFA::deltaToString()
       } else {
         letter = alphabet[j];
       }
-      //cout << "Letter: "<<letter << endl;
+      vector<string> states = transitions[state][letter];
       string out = join(transitions[state][letter],',');
       if (out.length() > 0)
       {
-        cout << "Function: "<< state << ", "<<letter<<" = "<<out << endl;
+        cout << state << ", " << letter << " = "<< out << endl;
       }
     }
   }

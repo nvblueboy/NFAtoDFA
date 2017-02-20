@@ -38,6 +38,20 @@ vector<string> splitString(string in, char delimeter)
   return output;
 }
 
+string cleanString(string input)
+{
+  //Removes newlines from the string.
+  string outStr = "";
+  for (int i = 0; i<input.length(); ++i)
+  {
+    if (input[i] != '\n' && input[i] != '\r')
+    {
+      outStr += input[i];
+    }
+  }
+  return outStr;
+}
+
 NFA readFile(char* filename)
 {
   ifstream infile(filename);
@@ -46,41 +60,39 @@ NFA readFile(char* filename)
   string startState;
   vector<string> acceptStates;
   map<string, map<string,vector<string>>> _transitions;
-
+  NFA output;
   if (infile.is_open())
   {
     string line;
     int linecount = 0;
     while (getline(infile, line))
     {
-      cout << line << endl;
+      line = cleanString(line);
       linecount++;
       if (linecount == 1)
       {
         states = splitString(line, '\t');
-        cout << "States: "<< join(states,',') << endl;
+        output.setStates(states);
       } else if (linecount == 2)
       {
         alphabet = splitString(line, '\t');
-        cout << "Alphabet: "<< join(alphabet,',') << endl;
+        output.setAlphabet(alphabet);
       } else if (linecount == 3)
       {
         startState = line;
-        cout << "Start state: "+startState;
+        output.setStartState(startState);
       } else if (linecount == 4)
       {
         acceptStates = splitString(line, '\t');
-        cout << "Accept states: "<< join(acceptStates,',') << endl;
+        output.setAcceptStates(acceptStates);
       } else {
         //Read in the transition function.
         vector<string> str1 = splitString(line,',');
         vector<string> str2 = splitString(str1[1],'=');
         vector<string> str {str1[0],str2[0],str2[1]};
-        _transitions[str[0]][str[1]].push_back(str[2]);
-        cout << "Transition: " << str[0] << " " << str[1] << " " << str[2] << endl;
-        cout << "Current: " << join(_transitions[str[0]][str[1]],'\n') << endl;
+        output.addTransition(str[0],str[1],str[2]);
       }
     }
   }
-  return NFA(states,alphabet,startState,acceptStates,_transitions);
+  return output;
 }

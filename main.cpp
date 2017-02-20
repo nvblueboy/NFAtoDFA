@@ -20,6 +20,12 @@ int main(int argc, char** argv)
 
     vector<string> F {"2"};
 
+
+    NFA myNFA(Q, E, "1", F);
+    myNFA.addTransition("1","a","5");
+    myNFA.addTransition("1","a","2");
+    myNFA.addTransition("1","b","6");
+    myNFA.addTransition("1","EPS","2");
     map<string, map<string,vector<string>>> delta;
     delta["1"]["a"]={"5","2"};
     delta["1"]["b"]={"6"};
@@ -29,7 +35,6 @@ int main(int argc, char** argv)
     delta["3"]["EPS"]={"4"};
     delta["3"]["EPS"]={"1"};
 
-    NFA myNFA(Q, E, "1", F, delta);
     myNFA.toString();
     vector<string> epsOne = myNFA.epsClosure("1");
     vector<string> epsFive = myNFA.epsClosure("5");
@@ -49,6 +54,11 @@ int main(int argc, char** argv)
   } else {
     NFA myNFA = readFile(argv[1]);
     myNFA.toString();
+    for (int i = 0; i < myNFA.states.size(); ++i)
+    {
+      string state = myNFA.states[i];
+      cout <<state << ": "<< join(myNFA.epsClosure(state),',') << endl;
+    }
   }
 
 
