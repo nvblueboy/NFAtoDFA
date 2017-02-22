@@ -35,8 +35,17 @@ NFA convert(NFA input)
       //    if it hasn't already been visited.
       nextSet = input.epsClosures(nextSet);
       vector<vector<string>> queue = queueToVector(stateSetQueue);
-      if (pointInVector())
+      cout << "Checking: "<<join(nextSet,',',false) << endl;
+      bool inQueue = vectorInVector(queue, nextSet);
+      cout <<"I'm calling it I'm mr meeseeks look at me" << endl;
+      bool visited = vectorInVector(stateSetVisited,nextSet);
+      if (!inQueue && !visited)
+      {
+        cout << "True, pushing to queue." << endl;
+        stateSetQueue.push(nextSet);
+      }
+      output.addState(join(nextSet,',',false));
     }
   }
-  return NFA();
+  return output;
 }

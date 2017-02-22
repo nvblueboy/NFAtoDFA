@@ -58,9 +58,10 @@ int main(int argc, char** argv)
     for (int i = 0; i < myNFA.states.size(); ++i)
     {
       string state = myNFA.states[i];
-      cout <<state << ": "<< join(myNFA.epsClosure(state),',') << endl;
-    }    
+      cout <<state << ": "<< join(myNFA.epsClosure(state),',',true) << endl;
+    }
     NFA newDFA = convert(myNFA);
+    cout << join(newDFA.states,'|',true) << endl;
   }
 
 

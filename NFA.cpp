@@ -64,22 +64,8 @@ string joinQueue(queue<string> q, char d)
     q.push(q.front());
     q.pop();
   }
-  return join(out,d);
+  return join(out,d,true);
 }
-
-bool pointInVector(vector<string> v, string s)
-{
-  for (int i = 0; i<v.size(); ++i)
-  {
-    string curr = v[i];
-    if (curr == s)
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 
 vector<string> vectorUnion(vector<string> v_1, vector<string> v_2)
 {
@@ -140,7 +126,7 @@ vector<string> NFA::epsClosure(string state)
 }
 
 //To use in the "toString" function in class NFA.
-string join(vector<string> v, char d)
+string join(vector<string> v, char d, bool space=true)
 {
   if (v.size() == 0)
   {
@@ -152,8 +138,12 @@ string join(vector<string> v, char d)
     outStr += v[i];
     if (i+1<v.size())
     {
-      //If it's not the last element, add the delimeter and a space.
-      outStr += string(1,d) + " ";
+      //If it's not the last element, add the delimeter and a space if space==true.
+      outStr += string(1,d);
+      if (space)
+      {
+        outStr+=" ";
+      }
     }
   }
   return outStr;
@@ -186,7 +176,7 @@ void NFA::deltaToString()
         letter = alphabet[j];
       }
       vector<string> states = transitions[state][letter];
-      string out = join(transitions[state][letter],',');
+      string out = join(transitions[state][letter],',',true);
       if (out.length() > 0)
       {
         cout << state << ", " << letter << " = "<< out << endl;
@@ -196,10 +186,10 @@ void NFA::deltaToString()
 }
 void NFA::toString()
 {
-  cout << "States: " << join(states, ',') << endl;
-  cout << "Alphabet: " << join(alphabet, ',')<< endl;
+  cout << "States: " << join(states, ',',true) << endl;
+  cout << "Alphabet: " << join(alphabet, ',',true)<< endl;
   cout << "Start state: " << startState << endl;
-  cout << "Accept states: " << join(acceptStates, ',') << endl;
+  cout << "Accept states: " << join(acceptStates, ',',true) << endl;
   cout << "Transition table: " << endl;
   deltaToString();
 }
