@@ -4,6 +4,7 @@
 #include "DFA.h"
 #include "NFA.h"
 #include "FileIO.h"
+#include "Boldness.h"
 
 using namespace std;
 
@@ -58,7 +59,8 @@ int main(int argc, char** argv)
     {
       string state = myNFA.states[i];
       cout <<state << ": "<< join(myNFA.epsClosure(state),',') << endl;
-    }
+    }    
+    NFA newDFA = convert(myNFA);
   }
 
 

@@ -31,6 +31,14 @@ void NFA::setStates(vector<string> _states)
   states = _states;
 }
 
+void NFA::addState(string _state)
+{
+  if (!pointInVector(states, _state))
+  {
+    states.push_back(_state);
+  }
+}
+
 void NFA::setAlphabet(vector<string> _alphabet)
 {
   alphabet = _alphabet;
@@ -59,19 +67,6 @@ string joinQueue(queue<string> q, char d)
   return join(out,d);
 }
 
-vector<string> queueToVector(queue<string> q)
-{
-  int s = q.size();
-  vector<string> out;
-  for (int i = 0; i<s; ++i)
-  {
-    out.push_back(q.front());
-    q.push(q.front());
-    q.pop();
-  }
-  return out;
-}
-
 bool pointInVector(vector<string> v, string s)
 {
   for (int i = 0; i<v.size(); ++i)
@@ -83,6 +78,35 @@ bool pointInVector(vector<string> v, string s)
     }
   }
   return false;
+}
+
+
+vector<string> vectorUnion(vector<string> v_1, vector<string> v_2)
+{
+  vector<string> output;
+  for (int i = 0; i<v_1.size(); ++i)
+  {
+    //Copy v_1 into output.
+    output.push_back(v_1[i]);
+  }
+  for (int i = 0; i<v_2.size(); ++i)
+  {
+    if (!pointInVector(output,v_2[i]))
+    {
+      output.push_back(v_2[i]);
+    }
+  }
+  return output;
+}
+
+vector<string> NFA::epsClosures(vector<string> states)
+{
+  vector<string> output;
+  for (int i = 0; i < states.size(); ++i)
+  {
+    output = vectorUnion(output, epsClosure(states[i]));
+  }
+  return output;
 }
 
 vector<string> NFA::epsClosure(string state)
@@ -112,7 +136,6 @@ vector<string> NFA::epsClosure(string state)
       }
     }
   }
-  visited.erase(visited.begin()); //Erase the first element, x doesn't epsclose x.
   return visited;
 }
 
