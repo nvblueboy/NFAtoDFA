@@ -10,15 +10,21 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  if (argc != 2)
+  if (argc < 2)
   {
     cout << "Usage: " << argv[0] << " <filename>" << endl;
   } else {
     NFA myNFA = readFile(argv[1]);
     NFA newDFA = convert(myNFA);
-    newDFA.toString();
     string output = newDFA.toOutputString();
-    ofstream outFile("output.DFA");
+    const char* filename;
+    if (argc > 2)
+    {
+      filename = argv[2];
+    } else {
+      filename = "output.DFA";
+    }
+    ofstream outFile(filename);
     outFile << output;
     outFile.close();
   }
