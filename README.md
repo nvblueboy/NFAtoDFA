@@ -3,7 +3,7 @@ Takes in a file describing a non-deterministic Finite State Automata and returns
 
 References: Boldness, Lecture
 
-command to run: ./executable.out <input file> <output file>
+command to run: ./executable.out &lt;input file> &lt;output file>
 
 
 This was a fun one.
