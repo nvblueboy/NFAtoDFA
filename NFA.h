@@ -14,11 +14,10 @@ string joinQueue(queue<string> q, char d);
 template<class T>
 bool pointInVector(vector<T> v, T s)
 {
-  cout << "PIV called" << v.size() <<endl;
+
   for (int i = 0; i<v.size(); ++i)
   {
     T curr = v[i];
-    cout << "Entered loop "<<curr << " " << s << " " << (curr == s) << endl;
     if (curr == s)
     {
       return true;
@@ -31,12 +30,11 @@ bool pointInVector(vector<T> v, T s)
 template<class T>
 bool vectorEquality(vector<T> v_1, vector<T> v_2)
 {
-  cout << "VecEq Called" << endl;
+  //cout << "VecEq Called" << endl;
   //Checks 2 vectors to see if their elements are the same (regardless of order).
   for (int i = 0; i<v_1.size(); ++i)
   {
     T p = v_1[i];
-    cout << "P v_1: "<< p << " v_2:"<< join(v_2,',',false)<< endl;
     if (!pointInVector(v_2, p))
     {
       return false;
@@ -45,35 +43,24 @@ bool vectorEquality(vector<T> v_1, vector<T> v_2)
   for (int i = 0; i<v_2.size(); ++i)
   {
     T p = v_2[i];
-    cout << "P v_2: " << p << endl;
     if (!pointInVector(v_1, p))
     {
       return false;
     }
   }
-  cout << "True" << endl;
   return true;
 }
 template<class T>
 bool vectorInVector(vector<vector<T>> v, vector<T> s)
 {
-  if (s.size() == 0)
-  {
-    cout << "S is the empty set." << endl;
-  } else {
-    cout << "The set size is " << s.size() << endl;
-  }
   for (int i = 0; i<v.size(); ++i)
   {
     vector<T> curr = v[i];
-    cout << "Vector to check: " << join(curr,',',false) << endl;
     if (vectorEquality(s, curr))
     {
       return true;
     }
   }
-  cout << "Vector: " << join(s,',',false) << endl;
-  cout << "VectorInVector turned out to be false I'm mr. meeseeks look at me" << endl;
   return false;
 }
 template<class T>
@@ -104,10 +91,13 @@ public:
   void setAlphabet(vector<string> _alphabet);
   void setStartState(string _startState);
   void setAcceptStates(vector<string> _acceptStates);
+  void addAcceptState(string s);
   vector<string> epsClosures(vector<string> states);
   vector<string> epsClosure(string state);
   void deltaToString();
   void toString();
+  string toOutputString();
+  string deltaToOutString();
 
   vector<string> states;
   vector<string> alphabet;

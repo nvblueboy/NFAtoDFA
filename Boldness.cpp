@@ -8,8 +8,11 @@ NFA convert(NFA input)
   //Start at the eps closure of the start state, q'_0.
   vector<string> startstate = input.epsClosure(input.startState);
   NFA output;
+  output.setAlphabet(input.alphabet);
   //Push q'_0 to the queue to be processed.
   stateSetQueue.push(startstate);
+  string start = "{" + join(startstate,',',false) + "}";
+  output.setStartState(start);
   vector<string> currentStates;
   vector<string> nextSet;
   while(!stateSetQueue.empty())
@@ -34,17 +37,27 @@ NFA convert(NFA input)
       //Finally, get the epsilon closure of nextSet and add that to the queue
       //    if it hasn't already been visited.
       nextSet = input.epsClosures(nextSet);
+      sort (nextSet.begin(), nextSet.end());
       vector<vector<string>> queue = queueToVector(stateSetQueue);
-      cout << "Checking: "<<join(nextSet,',',false) << endl;
       bool inQueue = vectorInVector(queue, nextSet);
-      cout <<"I'm calling it I'm mr meeseeks look at me" << endl;
       bool visited = vectorInVector(stateSetVisited,nextSet);
       if (!inQueue && !visited)
       {
-        cout << "True, pushing to queue." << endl;
         stateSetQueue.push(nextSet);
       }
-      output.addState(join(nextSet,',',false));
+      string oldState = "{" + join(currentStates,',',false) + "}";
+      string newState = "{" + join(nextSet,',',false) + "}";
+      for (int i = 0; i<input.acceptStates.size(); ++i)
+      {
+        string s = input.acceptStates[i];
+        if (pointInVector(nextSet,s))
+        {
+          output.addAcceptState(newState);
+        }
+      }
+      output.addState(oldState);
+      output.addState(newState);
+      output.addTransition(oldState,letter,newState);
     }
   }
   return output;

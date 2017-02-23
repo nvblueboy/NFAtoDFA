@@ -54,6 +54,14 @@ void NFA::setAcceptStates(vector<string> _acceptStates)
   acceptStates = _acceptStates;
 }
 
+void NFA::addAcceptState(string s)
+{
+  if (!pointInVector(acceptStates, s))
+  {
+    acceptStates.push_back(s);
+  }
+}
+
 string joinQueue(queue<string> q, char d)
 {
   int s = q.size();
@@ -177,6 +185,10 @@ void NFA::deltaToString()
       }
       vector<string> states = transitions[state][letter];
       string out = join(transitions[state][letter],',',true);
+      if (out.length() == 0 && letter != "EPS")
+      {
+        out = "EM";
+      }
       if (out.length() > 0)
       {
         cout << state << ", " << letter << " = "<< out << endl;
@@ -192,4 +204,39 @@ void NFA::toString()
   cout << "Accept states: " << join(acceptStates, ',',true) << endl;
   cout << "Transition table: " << endl;
   deltaToString();
+}
+
+string NFA::toOutputString()
+{
+  string outStr = "";
+  outStr += join(states,'\t', false) + "\n";
+  outStr += join(alphabet,'\t', false) + "\n";
+  outStr += startState + "\n";
+  outStr += join(acceptStates,'\t', false) + "\n";
+  outStr += deltaToOutString();
+  return outStr;
+}
+string NFA::deltaToOutString()
+{
+  string outStr = "";
+  for (int i = 0; i<states.size(); ++i)
+  {
+    string state = states[i];
+    for (int j = 0; j<alphabet.size(); ++j)
+    {
+      string letter = alphabet[j];
+      vector<string> states = transitions[state][letter];
+      string out = join(transitions[state][letter],',',false);
+      if (out == "{}" || out.length()==0)
+      {
+        out = "EM";
+      }
+      if (state == "{}")
+      {
+        state = "EM";
+      }
+        outStr += state +","+letter+"="+out+"\n";
+    }
+  }
+  return outStr;
 }
