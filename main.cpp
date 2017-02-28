@@ -1,7 +1,6 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include "DFA.h"
 #include "NFA.h"
 #include "FileIO.h"
 #include "Boldness.h"
